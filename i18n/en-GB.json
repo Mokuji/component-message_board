@@ -1,0 +1,9 @@
+{
+  "FEEDS_VIEW_TITLE": "Message board feeds",
+  "FEEDS_VIEW_DESCRIPTION": "Message board feed settings",
+  "CHRONOLOGICAL": "Chronological",
+  "ROUND_ROBIN": "Round robin",
+  "RANDOM": "Random",
+  "TWITTER_TIMELINE": "Twitter timeline",
+  "TWITTER_SEARCH": "Twitter search"
+}
