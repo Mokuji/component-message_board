@@ -46,7 +46,7 @@ class FeedReader
     
     //Merge the results based on the selected feed priority.
     $message_set = array();
-    switch($this->feed->feed_priority->get('string')){
+    switch($this->feed->source_priority->get('string')){
       
       case 'CHRONOLOGICAL':
         
@@ -93,10 +93,12 @@ class FeedReader
         
         //See what our modulus should be.
         $mod = count($messages_per_source);
+        $keys = array_keys($messages_per_source);
         
         //Shift the messages in order.
         for($size = 0; $size < $this->feed->max_items->get('int'); $size++){
-          $message_set[] = array_shift($messages_per_source[$size % $mod]);
+          $key = $keys[$size % $mod];
+          $message_set[] = array_shift($messages_per_source[$key]);
         }
         
         break;
@@ -115,27 +117,35 @@ class FeedReader
       case 'ROUND_ROBIN':
         
         //When we have round robin priority, the order should be correct already.
-        if($this->feed->feed_priority->get('string') == 'ROUND_ROBIN')
+        if($this->feed->source_priority->get('string') == 'ROUND_ROBIN'){
+          $messages = $message_set;
           break;
+        }
         
         //First make a collection of messages per source.
         $message_sets_per_source = array();
-        foreach($message_set as $message)
-          $message_sets_per_source[$message->feed_source_id->get('int')] = $message;
+        foreach($message_set as $message){
+          if(!array_key_exists($message->feed_source_id->get('int'), $message_sets_per_source))
+            $message_sets_per_source[$message->feed_source_id->get('int')] = array();
+          $message_sets_per_source[$message->feed_source_id->get('int')][] = $message;
+        }
         
         //Than round robin over them into the final set.
         $items = count($message_set);
+        $keys = array_keys($message_sets_per_source);
         for($size = 0; $size < $items; $size++){
           
           //Find the next source.
-          $target = $size % count($message_sets_per_source);
+          $target = $keys[$size % count($message_sets_per_source)];
           
           //Shift a message.
           $messages[] = array_shift($message_sets_per_source[$target]);
           
           //Remove the source when it's depleted.
-          if(count($target) == 0)
+          if(count($target) == 0){
             array_splice($message_sets_per_source, $target, 1);
+            $keys = array_keys($message_sets_per_source);
+          }
           
         }
         
@@ -144,8 +154,10 @@ class FeedReader
       case 'CHRONOLOGICAL':
         
         //When we have chronological priority, the order should be correct already.
-        if($this->feed->feed_priority->get('string') == 'CHRONOLOGICAL')
+        if($this->feed->source_priority->get('string') == 'CHRONOLOGICAL'){
+          $messages = $message_set;
           break;
+        }
         
         //In other cases we need to sort it ourselves.
         usort($message_set, function($a, $b){
@@ -157,10 +169,10 @@ class FeedReader
             return 0;
           
           if($ta > $tb)
-            return 1;
+            return -1;
           
           else
-            return -1;
+            return 1;
           
         });
         
@@ -183,41 +195,27 @@ class FeedReader
     
     foreach($this->feed->sources as $source){
       
+      //Find the right source handler.
       switch($source->type->get()){
         
         case 'TWITTER_TIMELINE':
+          $handler = new TwitterTimelineSourceHandler($source);
+          break;
           
-          $new_messages = json_decode(
-            mk('Component')
-              ->helpers('api_cache')
-              ->call('access_service', array('name' => 'twitter-1.1'))
-              ->user_timeline(array(
-                'screen_name' => $source->query->get(),
-                'since_id' => $source->latest_message->remote_id->get(),
-                'count' => $this->feed->max_items->get()
-              ))
-              ->get('string')
-          );
-          
-          if(count($new_messages) > 0){
-            
-            foreach($new_messages as $message){
-              
-              $mmodel = mk('Sql')->model('message_board', 'Messages')
-                ->set(array(
-                  'feed_source_id' => $source->id
-                  #TODO: rest invullen en parsen enzo
-                ))
-              
-            }
-            
-          }
-          
+        case 'TWITTER_SEARCH':
+          $handler = new TwitterSearchSourceHandler($source);
           break;
         
       }
       
-      #TODO: Twitter search source
+      //Query for new messages.
+      $messages = $handler->query();
+      
+      //Save those messages.
+      mk('Logging')->log('Message board', 'New messages', $messages->size());
+      foreach($messages as $message){
+        $message->save();
+      }
       
     }
     

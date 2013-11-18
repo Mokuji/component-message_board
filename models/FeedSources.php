@@ -15,9 +15,16 @@ class FeedSources extends \dependencies\BaseModel
   
   public function get_latest_message()
   {
-    return mk('Sql')->table('message_board', 'Message')
+    return mk('Sql')->table('message_board', 'Messages')
       ->where('feed_source_id', $this->id)
-      ->order('dt_posted')
+      ->order('dt_posted', 'DESC')
+      ->execute_single();
+  }
+  
+  public function get_feed()
+  {
+    return mk('Sql')->table('message_board', 'Feeds')
+      ->pk($this->feed_id)
       ->execute_single();
   }
   
