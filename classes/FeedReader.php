@@ -142,8 +142,8 @@ class FeedReader
           $messages[] = array_shift($message_sets_per_source[$target]);
           
           //Remove the source when it's depleted.
-          if(count($target) == 0){
-            array_splice($message_sets_per_source, $target, 1);
+          if(count($message_sets_per_source[$target]) == 0){
+            unset($message_sets_per_source[$target]);
             $keys = array_keys($message_sets_per_source);
           }
           
@@ -214,7 +214,9 @@ class FeedReader
       //Save those messages.
       mk('Logging')->log('Message board', 'New messages', $messages->size());
       foreach($messages as $message){
-        $message->save();
+        $message
+          ->save()
+          ->save_webpages();
       }
       
     }

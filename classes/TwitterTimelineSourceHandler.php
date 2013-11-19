@@ -1,8 +1,5 @@
 <?php namespace components\message_board\classes; if(!defined('MK')) die('No direct access.');
 
-use \components\message_board\models\Feeds;
-use \components\message_board\models\FeedSources;
-
 class TwitterTimelineSourceHandler extends TwitterSourceHandler
 {
   
@@ -29,19 +26,8 @@ class TwitterTimelineSourceHandler extends TwitterSourceHandler
     if(count($new_messages) > 0){
       
       foreach($new_messages as $message){
-        
-        $mmodel = mk('Sql')->model('message_board', 'Messages')
-          ->set(array(
-            'feed_source_id' => $this->source->id,
-            'dt_posted' => date('Y-m-d H:i:s', strtotime($message->created_at)),
-            'author' => '@'.$message->user->screen_name,
-            'content' => $message->text,
-            'remote_id' => $message->id_str,
-            'uri' => "https://twitter.com/{$message->user->screen_name}/status/{$message->id_str}"
-          ));
-        
-        $message_models[] = $mmodel;
-        
+        $parser = new TwitterMessageParser($this->source, $message);
+        $message_models[] = $parser->getModel();
       }
       
     }

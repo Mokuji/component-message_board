@@ -9,7 +9,14 @@ class Json extends \dependencies\BaseComponent
   {
     
     $reader = new FeedReader($sub_routes->{0});
-    return $reader->fetch();
+    $messages = $reader->fetch();
+    
+    //Include custom getter stuff.
+    foreach($messages as $message){
+      $message->webpages;
+    }
+    
+    return $messages;
     
   }
   
