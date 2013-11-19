@@ -43,7 +43,11 @@
     $container.text('Loading...');
     
     //Get the feed contents.
-    $.ajax(options.feed_url)
+    $.ajax({
+      url: options.feed_url,
+      dataType: 'json',
+      contentType: 'application/json'
+    })
       
       .done(function(messages){
         $container.text('');

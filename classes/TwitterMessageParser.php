@@ -76,28 +76,37 @@ class TwitterMessageParser
     foreach($this->raw_message->entities->urls as $url)
     {
       
-      $curl = curl_call($url->expanded_url);
+      //Since CURL calls may take a while, give the script some space.
+      set_time_limit(20);
       
-      //Only HTML pages are ok.
-      $type = explode(';', $curl['type']);
-      $type = trim($type[0]);
-      if($type !== 'text/html' && $type !== 'application/xhtml+xml'){
-        mk('Logging')->log('Webpage', 'Type based skip', $type.' ['.$curl['type'].']');
-        continue;
+      try{
+        
+        $curl = curl_call($url->expanded_url);
+        
+        //Only HTML pages are ok.
+        $type = explode(';', $curl['type']);
+        $type = trim($type[0]);
+        if($type !== 'text/html' && $type !== 'application/xhtml+xml'){
+          mk('Logging')->log('MessageBoard', 'Webpage', 'Type based skip: '.$curl['type']);
+          continue;
+        }
+        
+        $reader = new \Readability($curl['data']);
+        $content = $reader->getContent();
+        
+        $webpage = mk('Sql')
+          ->model('message_board', 'MessageWebpages')
+          ->set(array(
+            'title' => str_max($content['title'], 252, '...'),
+            'content' => $content['content'],
+            'uri' => $url->expanded_url
+          ));
+        
+        $webpages[] = $webpage;
+        
+      } catch (\Exception $ex){
+        mk('Logging')->log('MessageBoard', 'Webpage', 'CURL / Parsing failed: '.$ex->getMessage());
       }
-      
-      $reader = new \Readability($curl['data']);
-      $content = $reader->getContent();
-      
-      $webpage = mk('Sql')
-        ->model('message_board', 'MessageWebpages')
-        ->set(array(
-          'title' => str_max($content['title'], 252, '...'),
-          'content' => $content['content'],
-          'uri' => $url->expanded_url
-        ));
-      
-      $webpages[] = $webpage;
       
     }
     
