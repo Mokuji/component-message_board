@@ -1,0 +1,38 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  
+  <meta charset="utf-8" />
+  
+  <title>Testing the MessageBoard</title>
+  
+  <link rel="stylesheet" type="text/css" href="style.css">
+  
+  <script type="text/javascript" src="../../../../plugins/jquery/jquery-1.7.2.js"></script>
+  <script type="text/javascript" src="../../../../plugins/jquery/jquery.hashchange.js"></script>
+  <script type="text/javascript" src="../../../../plugins/jquery/jquery.matches.js"></script>
+  <script type="text/javascript" src="../../../../plugins/jquery/jquery.form.js"></script>
+  <script type="text/javascript" src="../../../../plugins/ejs/src/ejs_production.js"></script>
+  <script type="text/javascript" src="../js/jQuery.MessageBoard.js"></script>
+  
+  <script type="text/javascript">
+    $(function(){
+      
+      $('#message-board').MessageBoard({
+        feed_url: 'http://localhost/mokuji/rest/message_board/feed_messages/1',
+        template: 'message.ejs'
+        
+        //TODO:
+        //items_per_page: 4
+        //templates: {message: 'message.ejs', overall: 'overall.ejs'}
+        
+      });
+      
+    });
+  </script>
+  
+</head>
+<body>
+  <div id="message-board"></div>
+</body>
+</html>

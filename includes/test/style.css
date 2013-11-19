@@ -1,0 +1,22 @@
+.message{
+  width:500px;
+  border:1px dotted #ccc;
+  margin:1em;
+  padding:0 1em;
+}
+  .message .dt-posted{
+    font-size:50%;
+    font-weight:normal;
+  }
+  .message .content{
+    margin-bottom:1em;
+  }
+  .message .site-content{
+    height:300px;
+    overflow:auto;
+    border:1px dashed #b00;
+  }
+    .message .site-content img{
+      max-width:500px;
+      max-height:200px;
+    }

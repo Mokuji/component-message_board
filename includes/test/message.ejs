@@ -1,0 +1,21 @@
+<div class="message">
+  <div class="header">
+    <h2 class="author">
+      <%= message.author %>
+      <span class="dt-posted"><%= message.dt_posted %></span>
+    </h2>
+  </div>
+  <div class="content">
+    <%= message.content %>
+  </div>
+  <% if(message.webpages && message.webpages.length > 0){ %>
+    <div class="site-content">
+      <h3 class="site-title">
+        <a class="site-link" href="<%= message.webpages[0].uri %>" target="_blank">
+          <%= message.webpages[0].title %>
+        </a>
+      </h3>
+      <%= message.webpages[0].content %>
+    </div>
+  <% } %>
+</div>
