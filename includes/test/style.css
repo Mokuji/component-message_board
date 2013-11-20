@@ -31,6 +31,7 @@ body{
   text-align:center;
   font-size:200%;
   text-decoration:none;
+  outline:none;
 }
 .mb-pagination .mb-prev-page{
   left:0;
@@ -69,6 +70,7 @@ body{
     background:#333;
     border-radius:15px;
     color:#fff;
+    outline:none;
   }
   .mb-messages .mb-message .dt-posted{
     font-size:50%;
@@ -81,7 +83,7 @@ body{
     display:none;
     height:300px;
     overflow:auto;
-    border:1px solid rgba(0,0,0,0.3);
+    border:1px solid rgba(0,0,0,0.2);
     border-bottom:none;
     padding:5px;
   }

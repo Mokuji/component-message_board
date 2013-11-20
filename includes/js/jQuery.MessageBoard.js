@@ -131,8 +131,9 @@
     function prevPage()
     {
       
-      //Always unfocus, otherwise we might end up focusing nothing.
-      unfocusMessage();
+      //When focused, the navigation only unfocuses.
+      if(DOM.messages.hasClass('focusing'))
+        return unfocusMessage();
       
       //Loop back when we got to the first page.
       if(Data.currentPage <= 1)
@@ -150,8 +151,9 @@
     function nextPage()
     {
       
-      //Always unfocus, otherwise we might end up focusing nothing.
-      unfocusMessage();
+      //When focused, the navigation only unfocuses.
+      if(DOM.messages.hasClass('focusing'))
+        return unfocusMessage();
       
       //Loop back when we got to the last page.
       if(Data.numPages == Data.currentPage)
