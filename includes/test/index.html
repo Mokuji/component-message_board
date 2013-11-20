@@ -20,7 +20,9 @@
       
       $('#message-board').MessageBoard({
         feed_url: 'http://localhost/mokuji/rest/message_board/feed_messages/1',
-        template: 'message.ejs'
+        messageTemplate: 'message.ejs',
+        layoutTemplate: 'layout.ejs',
+        itemsPerPage: 6
         
         //TODO:
         //items_per_page: 4

@@ -1,21 +1,15 @@
-<div class="message">
+<div class="mb-message" data-message-id="<%= data.id %>">
+  <a class="mb-unfocus">X</a>
   <div class="header">
     <h2 class="author">
-      <%= message.author %>
-      <span class="dt-posted"><%= message.dt_posted %></span>
+      <%= data.author %>
+      <span class="dt-posted"><%= data.dt_posted %></span>
     </h2>
   </div>
   <div class="content">
-    <%= message.content %>
+    <%= data.content %>
   </div>
-  <% if(message.webpages && message.webpages.length > 0){ %>
-    <div class="site-content">
-      <h3 class="site-title">
-        <a class="site-link" href="<%= message.webpages[0].uri %>" target="_blank">
-          <%= message.webpages[0].title %>
-        </a>
-      </h3>
-      <%= message.webpages[0].content %>
-    </div>
+  <% if(data.webpages && data.webpages.length > 0){ %>
+    <div class="mb-site-content site-content"></div>
   <% } %>
 </div>
