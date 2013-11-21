@@ -19,7 +19,8 @@
     $(function(){
       
       $('#message-board').MessageBoard({
-        feed_url: 'http://localhost/mokuji/rest/message_board/feed_messages/1',
+        apiUrl: 'http://localhost/mokuji/rest/',
+        feedId: 1,
         messageTemplate: 'message.ejs',
         layoutTemplate: 'layout.ejs',
         itemsPerPage: 6

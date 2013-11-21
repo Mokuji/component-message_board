@@ -1,6 +1,6 @@
 (function($){
   
-  var requiredOpts = ['feed_url', 'messageTemplate', 'layoutTemplate']
+  var requiredOpts = ['apiUrl', 'feedId', 'messageTemplate', 'layoutTemplate']
   var defaultOpts = {
     itemsPerPage: 4
   };
@@ -12,13 +12,16 @@
       messages: null,
       messagesById: null,
       numPages: null,
-      currentPage: null
+      currentPage: null,
+      sources: null,
+      excludedSources: null
     };
     
     //References to various DOM elements.
     var DOM = {
       container: null,
       layout: null,
+      sources: null,
       messages: null
     };
     
@@ -30,9 +33,9 @@
         throw new Error('The EJS library is not available for MessageBoard templates.');
       
       //For debugging purposes.
-      EJS.config({
-        cache: false
-      });
+      // EJS.config({
+      //   cache: false
+      // });
       
       var template;
       
@@ -75,6 +78,7 @@
           nextArrowText: '&gt;'
         }
       });
+      DOM.sources = DOM.layout.find('.mb-sources');
       DOM.messages = DOM.layout.find('.mb-messages');
       
       //Set a loading text.
@@ -86,8 +90,11 @@
       //Bind events on the DOM.
       addEventHandlers();
       
-      //Get the feed contents.
+      //Get the feed messages.
       reloadFeed();
+      
+      //Get the feed sources.
+      reloadSources();
       
     }
     
@@ -109,6 +116,14 @@
           e.preventDefault();
           e.stopPropagation();
           unfocusMessage();
+        });
+      
+      DOM.sources
+        
+        //Source click
+        .on('click', '.mb-source', function(e){
+          e.preventDefault();
+          toggleSource(this);
         });
       
       //Macro level.
@@ -306,6 +321,30 @@
       
     }
     
+    function toggleSource(element)
+    {
+      
+      var $element = $(element);
+      var sourceId = parseInt($element.attr('data-source-id'), 10);
+      
+      //If it's in there, remove it.
+      var index = $.inArray(sourceId, Data.excludedSources);
+      if(index > -1){
+        Data.excludedSources.splice(index, 1);
+        $element.removeClass('excluded');
+      }
+      
+      //Otherwise add it.
+      else{
+        Data.excludedSources.push(sourceId);
+        $element.addClass('excluded');
+      }
+      
+      //Now that the settings are adjusted, reload the messages.
+      reloadFeed();
+      
+    }
+    
     //Focuses the provided message element.
     function focusMessage(element)
     {
@@ -349,13 +388,19 @@
       
       //Make a REST call.
       $.ajax({
-        url: Options.feed_url,
+        type: 'GET',
+        url: Options.apiUrl+'message_board/feed_messages/'+Options.feedId,
+        data: Data.excludedSources && Data.excludedSources.length > 0 ? {exclude_sources: Data.excludedSources} : {},
         dataType: 'json',
         contentType: 'application/json'
       })
         
         //Store the data and render messages.
         .done(function(messages){
+          
+          //There was a bug with the REST API, returning "[null]" for empty results.
+          if(messages && messages.length == 1 && messages[0] == null)
+            messages = [];
           
           Data.messages = messages;
           
@@ -370,6 +415,7 @@
           Data.numPages = Math.ceil(Data.messages.length / Options.itemsPerPage);
           Data.currentPage = 1;
           
+          unfocusMessage();
           renderMessages();
           
         })
@@ -380,7 +426,33 @@
       
     }
     
-    //(Re-)renders the messages.
+    //Loads the feed sources.
+    function reloadSources()
+    {
+      
+      //Make a REST call.
+      $.ajax({
+        url: Options.apiUrl+'message_board/feed_sources/'+Options.feedId,
+        dataType: 'json',
+        contentType: 'application/json'
+      })
+        
+        //Store the data and render sources.
+        .done(function(sources){
+          
+          Data.sources = sources;
+          Data.excludedSources = [];
+          renderSources();
+          
+        })
+        
+        .error(function(){
+          throw new Error('Failed to fetch feed sources for MessageBoard.');
+        });
+      
+    }
+    
+    //Renders the messages.
     function renderMessages()
     {
       
@@ -393,13 +465,38 @@
         Data.messages.length
       );
       
-      console.log(Data.currentPage, index, end);
-      
       //Go for it.
       DOM.messages.empty();
-      while(index < end){
-        DOM.messages.append( template('messageTemplate', Data.messages[index]) );
-        index++;
+      
+      if(Data.messages.length == 0){
+        DOM.messages.text('No messages.');
+      }
+      
+      else{
+        while(index < end){
+          DOM.messages.append( template('messageTemplate', Data.messages[index]) );
+          index++;
+        }
+      }
+      
+    }
+    
+    //Renders the sources.
+    function renderSources()
+    {
+      
+      DOM.sources.empty();
+      
+      for(var i = 0; i < Data.sources.length; i++){
+        var source = Data.sources[i];
+        DOM.sources.append(
+          $('<a>', {
+            'class': 'mb-source mb-type-'+(source.type.toLowerCase()),
+            'href': '#',
+            'text': source.query
+          })
+          .attr('data-source-id', source.id)
+        );
       }
       
     }

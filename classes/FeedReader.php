@@ -21,11 +21,14 @@ class FeedReader
   
   /**
    * Fetches the feed messages in their specified priority and ordering.
-   * @param  boolean $update Whether or not to update the sources first.
+   * @param  boolean $update  Whether or not to update the sources first.
+   * @param  mixed   $options A set of options to manipulate the output.
    * @return array A set of messages.
    */
-  public function fetch($update=true)
+  public function fetch($update=true, $options=null)
   {
+    
+    $options = Data($options);
     
     //When requested, runs an update first.
     if($update === true)
@@ -33,7 +36,13 @@ class FeedReader
     
     //Collect the set of messages to work with per source.
     $messages_per_source = array();
+    $exclude_sources = $options->exclude_sources->otherwise(array())->as_array();
+    
     foreach($this->feed->sources as $source){
+      
+      //Skip sources that are to be filtered.
+      if(in_array($source->id->get(), $exclude_sources))
+        continue;
       
       //Gets the messages for this source.
       $messages_per_source[$source->id->get()] = mk('Sql')->table('message_board', 'Messages')
@@ -43,6 +52,9 @@ class FeedReader
         ->get('array');
       
     }
+    
+    if(count($messages_per_source) == 0)
+      return array();
     
     //Merge the results based on the selected feed priority.
     $message_set = array();
@@ -98,7 +110,9 @@ class FeedReader
         //Shift the messages in order.
         for($size = 0; $size < $this->feed->max_items->get('int'); $size++){
           $key = $keys[$size % $mod];
-          $message_set[] = array_shift($messages_per_source[$key]);
+          $value = array_shift($messages_per_source[$key]);
+          if($value)
+            $message_set[] = $value;
         }
         
         break;
