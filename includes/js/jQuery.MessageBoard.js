@@ -126,45 +126,183 @@
           nextPage();
         });
       
+      //Global level.
+      $(document)
+        
+        //Key up event.
+        .on('keyup', function(e){
+          switch(e.keyCode){
+            case 27: unfocusMessage(); break; //ESC
+            case 37: prevPage(); break;       //Left arrow
+            case 39: nextPage(); break;       //Right arrow
+          }
+        });
+      
     }
     
     function prevPage()
     {
       
-      //When focused, the navigation only unfocuses.
-      if(DOM.messages.hasClass('focusing'))
-        return unfocusMessage();
+      //When focused, the navigation is per item.
+      if(DOM.messages.hasClass('focusing')){
+        
+        var currentIndex = getFocusedMessageIndex();
+        
+        //If this previous message exists.
+        if(currentIndex-1 >= 0 && Data.messages[currentIndex-1]){
+          
+          var targetMessage = Data.messages[currentIndex-1];
+          
+          //See if it is rendered.
+          var matchingElement = DOM.messages.find('.mb-message[data-message-id="'+targetMessage.id+'"]');
+          if(matchingElement.size() > 0){
+            focusMessage(matchingElement);
+          }
+          
+          //This means (for certain) it's on the previous page.
+          else{
+            Data.currentPage--;
+            renderMessages();
+            focusMessage(
+              DOM.messages.find('.mb-message[data-message-id="'+targetMessage.id+'"]')
+            );
+          }
+          
+        }
+        
+        //If a previous message does not exist, we are dealing with the first message.
+        //Meaning we'll loop back to the last message.
+        else{
+          
+          var targetMessage = Data.messages[Data.messages.length-1];
+          
+          if(Data.currentPage != Data.numPages){
+            Data.currentPage = Data.numPages;
+            renderMessages();
+          }
+          
+          focusMessage(
+            DOM.messages.find('.mb-message[data-message-id="'+targetMessage.id+'"]')
+          );
+          
+        }
+        
+      }
       
-      //Loop back when we got to the first page.
-      if(Data.currentPage <= 1)
-        Data.currentPage = Data.numPages;
-      
-      //Otherwise just go to the previous one.
-      else
-        Data.currentPage--;
-      
-      //Rebuild the messages DOM.
-      renderMessages();
-      
+      //When not focusing, got to the previous page normally.
+      else{
+        
+        //Loop back when we got to the first page.
+        if(Data.currentPage <= 1)
+          Data.currentPage = Data.numPages;
+        
+        //Otherwise just go to the previous one.
+        else
+          Data.currentPage--;
+        
+        //Rebuild the messages DOM.
+        renderMessages();
+        
+        
+      }
     }
     
     function nextPage()
     {
       
-      //When focused, the navigation only unfocuses.
-      if(DOM.messages.hasClass('focusing'))
-        return unfocusMessage();
+      //When focused, the navigation is per item.
+      if(DOM.messages.hasClass('focusing')){
+        
+        var currentIndex = getFocusedMessageIndex();
+        
+        //If this previous message exists.
+        if(currentIndex+1 >= 0 && Data.messages[currentIndex+1]){
+          
+          var targetMessage = Data.messages[currentIndex+1];
+          
+          //See if it is rendered.
+          var matchingElement = DOM.messages.find('.mb-message[data-message-id="'+targetMessage.id+'"]');
+          if(matchingElement.size() > 0){
+            focusMessage(matchingElement);
+          }
+          
+          //This means (for certain) it's on the next page.
+          else{
+            Data.currentPage++;
+            renderMessages();
+            focusMessage(
+              DOM.messages.find('.mb-message[data-message-id="'+targetMessage.id+'"]')
+            );
+          }
+          
+        }
+        
+        //If a next message does not exist, we are dealing with the last message.
+        //Meaning we'll loop back to the first message.
+        else{
+          
+          var targetMessage = Data.messages[0];
+          
+          if(Data.currentPage != 1){
+            Data.currentPage = 1;
+            renderMessages();
+          }
+          
+          focusMessage(
+            DOM.messages.find('.mb-message[data-message-id="'+targetMessage.id+'"]')
+          );
+          
+        }
+        
+      }
       
-      //Loop back when we got to the last page.
-      if(Data.numPages == Data.currentPage)
-        Data.currentPage = 1;
+      //When not focusing, do a normal page increment.
+      else{
+        
+        //Loop back when we got to the last page.
+        if(Data.numPages == Data.currentPage)
+          Data.currentPage = 1;
+        
+        //Otherwise just go to the next one.
+        else
+          Data.currentPage++;
+        
+        //Rebuild the messages DOM.
+        renderMessages();
+        
+      }
       
-      //Otherwise just go to the next one.
-      else
-        Data.currentPage++;
+    }
+    
+    //Finds the focused message's index.
+    function getFocusedMessageIndex()
+    {
       
-      //Rebuild the messages DOM.
-      renderMessages();
+      var activeElement = DOM.messages.find('.mb-message.active');
+      
+      //Check if we have an active element being focused at all.
+      if(activeElement.size() == 0 || !DOM.messages.hasClass('focusing'))
+        return null;
+      
+      var currentlyActive = parseInt(activeElement.attr('data-message-id'), 10);
+      
+      //Now find the index of this message.
+      var index = -1;
+      var found = false;
+      var target = null;
+      
+      do{
+        index++;
+        target = Data.messages[index];
+        found = target.id == currentlyActive;
+      }
+      while(!found && index < Data.messages.length);
+      
+      //If we found it, return the index number.
+      if(found)
+        return index;
+      
+      return null;
       
     }
     
