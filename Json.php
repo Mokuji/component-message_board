@@ -29,7 +29,7 @@ class Json extends \dependencies\BaseComponent
       Note: 
         The session is preserved here.
         Because if an update is required, one user can perform many parallel requests that each trigger the update.
-        This would potentially be a DOS attack.
+        This would potentially be a DOS attack as it fires many CURL requests.
     */
     
     #TODO: To mitigate a DDOS-attack against feeds that need to update, mark a feeds' state as 'IDLE' or 'UPDATING' in the database.
