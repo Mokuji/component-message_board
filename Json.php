@@ -40,6 +40,9 @@ class Json extends \dependencies\BaseComponent
     //Include custom getter stuff.
     foreach($messages as $message){
       $message->webpages;
+      $message->images->each(function($image){
+        $image->url->set((string)$image->generate_url());
+      });
     }
     
     return $messages;

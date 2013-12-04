@@ -102,6 +102,10 @@ body{
     border-bottom:none;
     padding:5px;
   }
+    .mb-messages .mb-message .main-image{
+      max-width:300px;
+      max-height:200px;
+    }
     .mb-messages .mb-message .site-content img{
       max-width:500px;
       max-height:300px;
@@ -123,4 +127,11 @@ body{
 }
   .mb-messages .mb-message.active .mb-unfocus{
     display:block;
+  }
+  .mb-messages .mb-message.active .main-image{
+    max-width:500px;
+    max-height:300px;
+  }
+  .mb-messages .mb-message.active.has-site .main-image{
+    display:none;
   }
