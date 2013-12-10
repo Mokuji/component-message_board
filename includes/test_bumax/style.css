@@ -1,0 +1,191 @@
+body{
+  font-family: Helvetica, Arial, 'Adobe Caslon Pro', Times, 'Times New Roman', serif;
+}
+
+.clearfix {
+  *zoom: 1;
+}
+.clearfix:before,
+.clearfix:after {
+  display: table;
+  line-height: 0;
+  content: "";
+}
+.clearfix:after {
+  clear: both;
+}
+
+.mb-controller{
+  position:relative;
+  padding:0 50px;
+  margin:25px auto 0 auto;
+  color: #202020;
+  width:800px;
+}
+  .mb-controller a{
+    text-decoration: none;
+  }
+  .mb-controller a:hover{
+    text-decoration: underline;
+  }
+
+.mb-sources .mb-source,
+.mb-pagination .mb-prev-page,
+.mb-pagination .mb-next-page{
+  text-decoration:none;
+  outline:none;
+}
+.mb-pagination .mb-prev-page,
+.mb-pagination .mb-next-page{
+  position:absolute;
+  top:0;
+  width:50px;
+  height:100%;
+  line-height:680px;
+  text-align:center;
+  font-size:200%;
+  background:no-repeat center center;
+  text-indent:-9999px;
+}
+.mb-pagination .mb-prev-page{
+  left:0;
+  background-image: url('http://tuxion.nl/wip/social/11/files/images/buttons/arrow-left1.png');
+}
+.mb-pagination .mb-next-page{
+  right:0;
+  background-image: url('http://tuxion.nl/wip/social/11/files/images/buttons/arrow-right1.png');
+}
+
+.mb-sources{
+  margin-bottom:10px;
+}
+.mb-sources .mb-source{
+  font-size: .7em;
+  padding-left: 18px;
+  padding-right: 15px;
+  display:inline-block;
+  background:url(http://tuxion.nl/wip/social/11/files/images/icons/twitter1-10h.png) left center no-repeat;
+  color:#000;
+  font-weight:bold;
+}
+  .mb-sources .mb-source:hover{
+    text-decoration: none;
+  }
+  .mb-sources .mb-source.excluded{
+    font-weight:normal;
+    background-image:url(http://tuxion.nl/wip/social/11/files/images/icons/twitter0-10h.png);
+  }
+
+.mb-messages .mb-message{
+  -webkit-border-radius: 4px;
+  -moz-border-radius: 4px;
+  border-radius: 4px;
+  line-height: 18px;
+  border: solid #ccc 1px;
+  float:left;
+  width:388px;
+  height:200px;
+  overflow:hidden;
+  cursor:pointer;
+  background-color: #e6e6e6;
+  margin: 5px;
+  -moz-background-clip: border;
+  -moz-background-inline-policy: continuous;
+  -moz-background-origin: padding;
+  line-height: 1.4;
+  font-size: 12px;
+  border-left: 1px solid #E9E9E9;
+  border-bottom: 1px solid #E9E9E9;
+}
+  .mb-messages .mb-message a{
+    color:#619A43;
+  }
+  .mb-messages .mb-message .mb-unfocus{
+    display:none;
+    position:absolute;
+    top:25px;
+    right:46px;
+    text-decoration:none;
+    padding:1px 5px;
+    cursor:pointer;
+    background:#333;
+    border-radius:15px;
+    color:#fff;
+    outline:none;
+  }
+  .mb-messages .mb-message .author a,
+  .mb-messages .mb-message .dt-posted a{
+    color:#000;
+  }
+  .mb-messages .mb-message .content{
+    margin-bottom:1em;
+  }
+  .mb-messages .mb-message .top-bar{
+    display: block;
+    background-color: #619A43;
+    color: #fff;
+    font-family: Arial, sans-serif;
+    font-size: 11.4px;
+    font-weight: 700;
+    line-height: 1.3;
+    padding: 5px 10px;
+    text-decoration: none;
+    text-transform: uppercase;
+    text-overflow: ellipsis;
+    border-bottom: solid #c3c3c3 1px;
+    overflow:hidden;
+    max-height:25px;
+    white-space:nowrap;
+  }
+  .mb-messages .mb-message .header{
+    background-color: #ebebeb;
+    border-bottom: solid #c3c3c3 1px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    padding-left: 10px;
+    color: #acacac;
+  }
+  .mb-messages .mb-message .content{
+    margin: 18px 15px 18px 15px;
+    font-size: 15px;
+    line-height: 22px;
+    font-family: Georgia,Palatino,Helvetica Neue,Helvetica,Arial,sans-serif!important;
+    -webkit-font-smoothing: antialiased;
+  }
+  .mb-messages .mb-message.active .content{
+    font-size:22px;
+    line-height:30px;
+  }
+  .mb-messages .mb-message .site-content{
+    padding-top: 18px;
+    display:none;
+    max-height:420px;
+    overflow:auto;
+    margin-top:20px;
+    border-top:1px solid rgba(0,0,0,0.2);
+    border-bottom:none;
+    margin: 18px 15px 18px 15px;
+  }
+    .mb-messages .mb-message .site-content img{
+      max-width:500px;
+      max-height:300px;
+      margin:0.5em;
+      float:left;
+    }
+
+.mb-messages.focusing .mb-message{
+  display:none;
+}
+.mb-messages.focusing .mb-message.active{
+  display:block;
+  float:none;
+  width:auto;
+  height:auto;
+  overflow:auto;
+  cursor:auto;
+  min-height:600px;
+  /*margin:60px;*/
+}
+  .mb-messages .mb-message.active .mb-unfocus{
+    display:block;
+  }

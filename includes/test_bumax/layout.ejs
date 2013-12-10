@@ -1,0 +1,16 @@
+<div class="mb-controller">
+  
+  <div class="mb-sources"></div>
+  
+  <div class="mb-messages clearfix"></div>
+  
+  <% if(data.pagination && data.pagination.visible){ %>
+    <div class="mb-pagination">
+      <% if(data.pagination.showArrows){ %>
+        <a class="mb-prev-page" href="#"><%= data.pagination.prevArrowText %></a>
+        <a class="mb-next-page" href="#"><%= data.pagination.nextArrowText %></a>
+      <% } %>
+    </div>
+  <% } %>
+  
+</div>

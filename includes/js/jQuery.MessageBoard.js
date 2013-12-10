@@ -107,8 +107,11 @@
         
         //Message click.
         .on('click', '.mb-message', function(e){
-          e.preventDefault();
-          focusMessage(this);
+          //Only open message if user didn't click a link.
+          if( !$(e.target).is('a') ){
+            e.preventDefault();
+            focusMessage(this);
+          }
         })
         
         //Unfocus button click.

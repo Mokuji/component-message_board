@@ -1,0 +1,36 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  
+  <meta charset="utf-8" />
+  
+  <title>Testing the MessageBoard</title>
+  
+  <link rel="stylesheet" type="text/css" href="style.css">
+  
+  <script type="text/javascript" src="../../../../plugins/jquery/jquery-1.7.2.js"></script>
+  <script type="text/javascript" src="../../../../plugins/jquery/jquery.hashchange.js"></script>
+  <script type="text/javascript" src="../../../../plugins/jquery/jquery.matches.js"></script>
+  <script type="text/javascript" src="../../../../plugins/jquery/jquery.form.js"></script>
+  <script type="text/javascript" src="../../../../plugins/ejs/src/ejs_production.js"></script>
+  <script type="text/javascript" src="../js/jQuery.MessageBoard.js"></script>
+  
+  <script type="text/javascript">
+    $(function(){
+      
+      $('#message-board').MessageBoard({
+        apiUrl: 'http://localhost/tuxion.cms/rest/',
+        feedId: 1,
+        messageTemplate: 'message.ejs',
+        layoutTemplate: 'layout.ejs',
+        itemsPerPage: 6
+      });
+      
+    });
+  </script>
+  
+</head>
+<body>
+  <div id="message-board"></div>
+</body>
+</html>
