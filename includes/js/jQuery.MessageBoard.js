@@ -90,11 +90,16 @@
       //Bind events on the DOM.
       addEventHandlers();
       
-      //Get the feed messages.
-      reloadFeed();
-      
       //Get the feed sources.
       reloadSources();
+      
+      //Do this next tick to optimize the server-side threading.
+      setTimeout(function(){
+        
+        //Get the feed messages.
+        reloadFeed();
+        
+      },0);
       
     }
     
@@ -107,11 +112,14 @@
         
         //Message click.
         .on('click', '.mb-message', function(e){
-          //Only open message if user didn't click a link.
-          if( !$(e.target).is('a') ){
-            e.preventDefault();
-            focusMessage(this);
-          }
+          
+          //<a> elements should be handled normally.
+          if($(e.target).is('a'))
+            return;
+          
+          e.preventDefault();
+          focusMessage(this);
+          
         })
         
         //Unfocus button click.

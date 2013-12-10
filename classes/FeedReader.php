@@ -230,7 +230,8 @@ class FeedReader
       foreach($messages as $message){
         $message
           ->save()
-          ->save_webpages();
+          ->save_webpages()
+          ->save_images();
       }
       
     }

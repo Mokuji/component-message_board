@@ -1,4 +1,4 @@
-<div class="mb-message" data-message-id="<%= data.id %>">
+<div class="mb-message <%= (data.images && data.images.length > 0) ? 'has-image' : '' %> <%= (data.webpages && data.webpages.length > 0) ? 'has-site' : '' %>" data-message-id="<%= data.id %>">
   <a class="mb-unfocus">X</a>
   <div class="header">
     <h2 class="author">
@@ -9,6 +9,9 @@
   <div class="content">
     <%= data.content %>
   </div>
+  <% if(data.images && data.images.length > 0){ %>
+    <img class="mb-image main-image" src="<%= data.images[0].url %>"></img>
+  <% } %>
   <% if(data.webpages && data.webpages.length > 0){ %>
     <div class="mb-site-content site-content"></div>
   <% } %>

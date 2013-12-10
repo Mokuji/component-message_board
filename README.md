@@ -10,7 +10,6 @@ Dependencies:
 
 TODO:
 
-1. Implement a javascript library to display the feeds.
 1. Parse author information better: table with avatar, uri, name, id, etc.
 1. Improve the `readability` plugin.
 1. Cache message images.

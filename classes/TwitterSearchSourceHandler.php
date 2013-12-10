@@ -23,7 +23,7 @@ class TwitterSearchSourceHandler extends TwitterSourceHandler
     
     $new_messages = $result->statuses;
     
-    $message_models = new \dependencies\Data();
+    $message_models = array();
     
     if(count($new_messages) > 0){
       
@@ -34,7 +34,7 @@ class TwitterSearchSourceHandler extends TwitterSourceHandler
       
     }
     
-    return $message_models;
+    return Data($message_models);
     
   }
   
